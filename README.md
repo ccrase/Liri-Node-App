@@ -1,0 +1,1 @@
+LIRI is a Language Interpretation and Recognition Interface. LIRI is a command line node app. LIRI searches for Spotify songs, Bands in Town for concerts and OMDB for movies. 

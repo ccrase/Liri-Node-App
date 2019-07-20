@@ -1,74 +1,64 @@
 
 //____________________________________libraries & variables____________________________________________
+//require dotenv
+require('dotenv').config();
+
+//require concerts.js
+const concertsjs = require('./concerts');
+
+//require spotify.js
+const spotifySearch = require('./spotify');
+
+//require movie.js
+const moviejs = require('./movie');
+
 //require inquirer
 const inquirer = require('inquirer');
-//require Spotify
-const Spotify = require('node-spotify-api');
-//require Axios
-const axios = require('axios');
 
-let userinput;
-
-//_________________________________________spotify API key_____________________________________________
-let spotify = new Spotify({
-    id: 'd066731a8cdc4e1f859284f5c604db08',
-    secret: '963e639123ef4513bd85b4bcdcb46233' 
-});
+let userinputType;
+let userinputTitle;
+let defaultInput = "I want it that way";
 
 //_____________________________________________inquirer________________________________________________
 inquirer.prompt([
     //pass questions here
     {type: 'input',
+    name: 'type',
+    message: 'Type either "concert-this", "spotify-this-song", "movie-this" ',
+    default: ''},
+
+    {type: 'input',
     name: 'title',
     message: 'Search for a Title',
     default: ''}
 ])
-.then(answer =>{
+.then(answers =>{
     //use user feedback for ... whatever!
-    userinput = answer;
-    console.log(userinput.title);
+    userinputType = answers.type;
+    userinputTitle = answers.title;
 
-    //_______________________________spotify request for specific URL______________________________________
-    spotify.search({
-        type: 'track',
-        query: userinput.title
-    },function(err, data){
-        if(err){
-            console.log("Error Occured: " + err);
-            return;
-        }
-        let songs = data.tracks.items;
-
-        for(var i = 0; i < songs.length; i++){
-             console.log('Song Name: ' + songs[i].name);
-             //console.log('Artist(s): ' + songs[i].artists);
-             console.log('Album: ' + songs[i].album.name);
-             console.log("-------------------------------------");
-         }
+     switch(userinputType){
+        case "concert-this":
+            console.log("you picked a concert");
+            concertsjs(userinputTitle);
+        break;
         
-    });
-    //__________________________________________OMBD________________________________________________________
-    axios.get("http://www.omdbapi.com/?t=" + userinput.title + "&y=&plot=short&apikey=trilogy")
-    .then(function(response){
-        console.log("-------------------------------------");
-        console.log('Title: ' + response.data.Title);
-        console.log('Description: ' + response.data.Plot);
-        console.log('Rated: ' + response.data.Rated);
-        console.log('Release Date: ' + response.data.Year);
-        console.log('Rating: ' + response.data.imdbRating + '/10');
-    })
-     //____________________________________Bands in Town_____________________________________________________
-     let bandsInTownQuery = 'https://rest.bandsintown.com/artists/' + userinput.title + '/events?app_id=codingbootcamp';
-     axios.get(bandsInTownQuery)
-     .then(function(response){
-         console.log(response);
-     })
+        case "spotify-this-song":
+            console.log("you picked a song");
+            spotifySearch(userinputTitle);
+        break;
+        
+        case "movie-this":
+            console.log("you picked a movie");
+            moviejs(userinputTitle);
+        break;
+        
+        default:
+            console.log("do-what-it-says!");
+            //still working on this part, having trouble passing in the default input when the user doesn't input anything
+            if(!userinputTitle){
+                concertsjs(defaultInput);
+            };
+
+    };
 });
-
-
-
-
-
-
-
-

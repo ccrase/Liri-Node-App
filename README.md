@@ -15,6 +15,8 @@ The movie.js file contains the functions and API call for OMDB.
 Instructions:
 Because I've used inquirer, the user will be prompt to insert specific inputs. To start, simply type "node liri.js" and press enter. 
 
+Images:
+Check out the images folder for screenshots of the working application for each case.
 
 Technologies Used:
 -inquirer
